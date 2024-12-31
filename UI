@@ -229,7 +229,7 @@ function Library:Notify(options, callback)
 			table.remove(Library.Notif.Active, notifIdx)
 			task.delay(0.5, self.Frame.Destroy, self.Frame)
 		end
-		
+
 		pcall(task.spawn, self.Callback, bool)
 	end
 
@@ -456,35 +456,35 @@ function Library:AddWindow(options)
 	local function saveConfig(filePath)
 		pcall(function()
 			local config = { Flags = {}, Binds = {}, Sliders = {}, Pickers = {} }
-	
+
 			for _, tab in next, Window.Tabs do
 				for flag, value in next, tab.Flags do
 					config.Flags[flag] = value
 				end
-		
+
 				for _, section in next, tab.Sections do
 					for _, item in next, section.List do
 						local flag = item.Flag or item.Name
-		
+
 						if item.Type == "Bind" then
 							config.Binds[flag] = item.Bind.Name
-		
+
 						elseif item.Type == "Slider" then
 							config.Sliders[flag] = item.Value
-		
+
 						elseif item.Type == "Picker" then
 							config.Pickers[flag] = { Color = item.Color, Rainbow = item.Rainbow }
-		
+
 						elseif item.Type == "SubSection" then
 							for _, item2 in next, item.List do
 								local flag2 = item2.Flag or item2.Name
-		
+
 								if item2.Type == "Bind" then
 									config.Binds[flag2] = item2.Bind.Name
-		
+
 								elseif item2.Type == "Slider" then
 									config.Sliders[flag2] = item2.Value
-		
+
 								elseif item2.Type == "Picker" then
 									config.Pickers[flag2] = { Color = item2.Color, Rainbow = item2.Rainbow }
 								end
@@ -493,54 +493,54 @@ function Library:AddWindow(options)
 					end
 				end
 			end
-		
+
 			writefile(filePath, HS:JSONEncode(config))
 		end)
 	end
-	
+
 	local function loadConfig(filePath)
-		pcall(function()
+		local suc, err = pcall(function()
 			local config = HS:JSONDecode(readfile(filePath))
-		
+
 			if config then
 				for _, tab in next, Window.Tabs do
 					for _, section in next, tab.Sections do
 						for _, item in next, section.List do
 							local flag = item.Flag or item.Name
-		
+
 							if config.Flags[flag] ~= nil then
 								item[item.Type == "Toggle" and "Set" or "Toggle"](item, config.Flags[flag])
 							end
-		
+
 							if item.Type == "Bind" then
 								item:Set(Enum.KeyCode[config.Binds[flag]])
-		
+
 							elseif item.Type == "Slider" then
 								item:Set(config.Sliders[flag])
-		
+
 							elseif item.Type == "Picker" then
 								local picker = config.Pickers[flag]
-		
+
 								item:Set(picker.Color.R, picker.Color.G, picker.Color.B)
 								item:ToggleRainbow(picker.Rainbow)
-		
+
 							elseif item.Type == "SubSection" then
 								for _, item2 in next, item.List do
 									local flag2 = item2.Flag or item2.Name
-		
+
 									if config.Flags[flag2] ~= nil then
 										item2[item2.Type == "Toggle" and "Set" or "Toggle"](item2, config.Flags[flag2])
 									end
-		
+
 									if item2.Type == "Bind" then
 										item2:Set(Enum.KeyCode[config.Binds[flag2]])
-		
+
 									elseif item2.Type == "Slider" then
 										item2:Set(config.Sliders[flag2])
-		
+
 									elseif item2.Type == "Picker" then
 										local picker = config.Pickers[flag2]
-		
+
 										item2:Set(picker.Color.R, picker.Color.G, picker.Color.B)
 										item2:ToggleRainbow(picker.Rainbow)
 									end
@@ -551,6 +551,7 @@ function Library:AddWindow(options)
 				end
 			end
 		end)
+		if err then print(err) end 
 	end
 
 	function Window:Toggle(bool)
@@ -579,7 +580,7 @@ function Library:AddWindow(options)
 								overlay = v; break
 							end
 						end
-							
+
 						if overlay then
 							local tween = Storage.Tween.Cosmetic[overlay]
 
@@ -598,27 +599,27 @@ function Library:AddWindow(options)
 					elseif item.Type == "SubSection" then
 						for _, item2 in next, item.List do
 							local flag2 = item2.Flag or item2.Name
-		
+
 							if tab.Flags[flag2] == true or item2.Rainbow == true then
 								local overlay = nil
-		
+
 								for _, v in next, item2.Frame:GetDescendants() do
 									if v.Name == "Overlay" then
 										overlay = v; break
 									end
 								end
-									
+
 								if overlay then
 									local tween = Storage.Tween.Cosmetic[overlay]
-		
+
 									if tween then
 										tween:Cancel(); tween = nil
 									end
-		
+
 									overlay.BackgroundColor3 = SelfModules.UI.Color.Add(accent, Color3.fromRGB(50, 50, 50))
 								end
 							end
-		
+
 							if item2.Type == "Slider" then
 								item2.Frame.Holder.Slider.Bar.Fill.BackgroundColor3 = SelfModules.UI.Color.Sub(accent, Color3.fromRGB(50, 50, 50))
 								item2.Frame.Holder.Slider.Point.BackgroundColor3 = accent
@@ -686,7 +687,7 @@ function Library:AddWindow(options)
 
 	function Window:AddTab(name, options)
 		options = options or {}
-		
+
 		local Tab = {
 			Name = name,
 			Type = "Tab",
@@ -818,7 +819,7 @@ function Library:AddWindow(options)
 
 		function Tab:AddSection(name, options)
 			options = options or {}
-			
+
 			local Section = {
 				Name = name,
 				Type = "Section",
@@ -1072,7 +1073,7 @@ function Library:AddWindow(options)
 
 					tween(Toggle.Frame.Holder.Indicator.Overlay, instant and 0 or 0.25, { ImageTransparency = bool and 0 or 1, Position = bool and UDim2.new(1, -24, 0, 2) or UDim2.new(0, 2, 0, 2) })
 					tween(Toggle.Frame.Holder.Indicator.Overlay, "Cosmetic", instant and 0 or 0.25, { BackgroundColor3 = bool and SelfModules.UI.Color.Add(Library.Theme.Accent, Color3.fromRGB(50, 50, 50)) or SelfModules.UI.Color.Add(Library.Theme.SectionColor, Color3.fromRGB(25, 25, 25)) })
-				
+
 					pcall(task.spawn, Toggle.Callback, bool)
 				end
 
@@ -1140,7 +1141,7 @@ function Library:AddWindow(options)
 
 			function Section:AddDualLabel(options)
 				options = options or {}
-				
+
 				local DualLabel = {
 					Name = options[1].. " ".. options[2],
 					Type = "DualLabel",
@@ -1465,7 +1466,7 @@ function Library:AddWindow(options)
 					Bind.Bind = bind
 					Bind.Frame.Holder.Bind.Label.Text = bind.Name
 					Bind.Frame.Holder.Bind.Size = UDim2.new(0, math.max(12 + math.round(TXS:GetTextSize(bind.Name, 14, Enum.Font.SourceSans, Vector2.new(9e9)).X + 0.5), 42), 0, 26)
-					
+
 					if connections.listen then
 						cancelListen()
 					end
@@ -1933,7 +1934,7 @@ function Library:AddWindow(options)
 								if Dropdown.Toggled then
 									Dropdown:UpdateHeight()
 								end
-								
+
 								if #Dropdown.List == 0 and not ignoreToggle then
 									Dropdown:Toggle(false)
 								end
@@ -1979,13 +1980,13 @@ function Library:AddWindow(options)
 
 				Section.List[#Section.List + 1] = Dropdown
 				Dropdown.Frame.Parent = Section.Frame.List
-				
+
 				Dropdown.Frame.Holder.List.ChildAdded:Connect(function(c)
 					if c.ClassName == "Frame" then
 						Dropdown:UpdateHeight()
 					end
 				end)
-				
+
 				Dropdown.Frame.InputBegan:Connect(function(input)
 					if input.UserInputType == Enum.UserInputType.MouseButton1 and #Dropdown.List > 0 and Mouse.Y - Dropdown.Frame.AbsolutePosition.Y <= 30 then
 						Dropdown:Toggle(not Dropdown.Toggled)
@@ -2442,7 +2443,7 @@ function Library:AddWindow(options)
 
 			function Section:AddSubSection(name, options)
 				options = options or {}
-				
+
 				local SubSection = {
 					Name = name,
 					Type = "SubSection",
@@ -2687,7 +2688,7 @@ function Library:AddWindow(options)
 
 						tween(Toggle.Frame.Holder.Indicator.Overlay, instant and 0 or 0.25, { ImageTransparency = bool and 0 or 1, Position = bool and UDim2.new(1, -24, 0, 2) or UDim2.new(0, 2, 0, 2) })
 						tween(Toggle.Frame.Holder.Indicator.Overlay, "Cosmetic", instant and 0 or 0.25, { BackgroundColor3 = bool and SelfModules.UI.Color.Add(Library.Theme.Accent, Color3.fromRGB(50, 50, 50)) or SelfModules.UI.Color.Add(Library.Theme.SectionColor, Color3.fromRGB(25, 25, 25)) })
-					
+
 						pcall(task.spawn, Toggle.Callback, bool)
 					end
 
@@ -2755,7 +2756,7 @@ function Library:AddWindow(options)
 
 				function SubSection:AddDualLabel(options)
 					options = options or {}
-					
+
 					local DualLabel = {
 						Name = options[1].. " ".. options[2],
 						Type = "DualLabel",
@@ -3080,7 +3081,7 @@ function Library:AddWindow(options)
 						Bind.Bind = bind
 						Bind.Frame.Holder.Bind.Label.Text = bind.Name
 						Bind.Frame.Holder.Bind.Size = UDim2.new(0, math.max(12 + math.round(TXS:GetTextSize(bind.Name, 14, Enum.Font.SourceSans, Vector2.new(9e9)).X + 0.5), 42), 0, 26)
-						
+
 						if connections.listen then
 							cancelListen()
 						end
@@ -3172,7 +3173,7 @@ function Library:AddWindow(options)
 						Flag = options.flag or name,
 						Callback = callback,
 					}
-					
+
 					Slider.Frame = SelfModules.UI.Create("Frame", {
 						Name = name,
 						BackgroundColor3 = SelfModules.UI.Color.Add(Library.Theme.SectionColor, Color3.fromRGB(20, 20, 20)),
@@ -3277,7 +3278,7 @@ function Library:AddWindow(options)
 						if options.toggleable == true and Tab.Flags[Slider.Flag] == false then
 							return
 						end
-	
+
 						pcall(task.spawn, Slider.Callback, val, Tab.Flags[Slider.Flag] or nil)
 					end
 
@@ -3287,7 +3288,7 @@ function Library:AddWindow(options)
 
 							tween(Slider.Frame.Holder.Indicator.Overlay, instant and 0 or 0.25, { ImageTransparency = bool and 0 or 1, Position = bool and UDim2.new(1, -24, 0, 2) or UDim2.new(0, 2, 0, 2) })
 							tween(Slider.Frame.Holder.Indicator.Overlay, "Cosmetic", instant and 0 or 0.25, { BackgroundColor3 = bool and SelfModules.UI.Color.Add(Library.Theme.Accent, Color3.fromRGB(50, 50, 50)) or SelfModules.UI.Color.Add(Library.Theme.SectionColor, Color3.fromRGB(25, 25, 25)) })
-						
+
 							if options.fireontoggle ~= false then
 								pcall(task.spawn, Slider.Callback, Slider.Value, bool)
 							end
@@ -3483,7 +3484,7 @@ function Library:AddWindow(options)
 
 					function Dropdown:UpdateHeight()
 						Dropdown.Frame.Holder.List.CanvasSize = UDim2.new(0, 0, 0, #Dropdown.List * 27 - 5)
-						
+
 						if Dropdown.Toggled == true then
 							Dropdown.Frame.Size = UDim2.new(1, 2, 0, Dropdown:GetHeight())
 							SubSection:UpdateHeight()
@@ -3495,12 +3496,12 @@ function Library:AddWindow(options)
 							Name = name,
 							Callback = callback,
 						}
-	
+
 						Item.Frame = SelfModules.UI.Create("Frame", {
 							Name = name,
 							BackgroundColor3 = SelfModules.UI.Color.Add(Library.Theme.SectionColor, Color3.fromRGB(20, 20, 20)),
 							Size = UDim2.new(1, -10, 0, 22),
-	
+
 							SelfModules.UI.Create("TextButton", {
 								Name = "Button",
 								BackgroundColor3 = SelfModules.UI.Color.Add(Library.Theme.SectionColor, Color3.fromRGB(10, 10, 10)),
@@ -3513,17 +3514,17 @@ function Library:AddWindow(options)
 								TextWrapped = true,
 							}, UDim.new(0, 5)),
 						}, UDim.new(0, 5))
-	
+
 						-- Scripts
-	
+
 						Dropdown.List[#Dropdown.List + 1] = name
 						ListObjects[#ListObjects + 1] = Item
 						Item.Frame.Parent = Dropdown.Frame.Holder.List
-	
+
 						if Dropdown.Toggled == true then
 							Dropdown:UpdateHeight()
 						end
-	
+
 						Item.Frame.Button.Activated:Connect(function()
 							if typeof(Item.Callback) == "function" then
 								pcall(task.spawn, Item.Callback)
@@ -3531,34 +3532,34 @@ function Library:AddWindow(options)
 								Dropdown:Select(Item.Name)
 							end
 						end)
-	
+
 						return Item
 					end
-	
+
 					function Dropdown:Remove(name, ignoreToggle)
 						for i, v in next, Dropdown.List do
 							if v == name then
 								local item = ListObjects[i]
-	
+
 								if item then
 									item.Frame:Destroy()
 									table.remove(Dropdown.List, i)
 									table.remove(ListObjects, i)
-	
+
 									if Dropdown.Toggled then
 										Dropdown:UpdateHeight()
 									end
-									
+
 									if #Dropdown.List == 0 and not ignoreToggle then
 										Dropdown:Toggle(false)
 									end
 								end
-	
+
 								break
 							end
 						end
 					end
-	
+
 					function Dropdown:ClearList()
 						for _ = 1, #Dropdown.List, 1 do
 							Dropdown:Remove(Dropdown.List[1], true)
@@ -3567,7 +3568,7 @@ function Library:AddWindow(options)
 
 					function Dropdown:SetList(list)
 						Dropdown:ClearList()
-	
+
 						for _, v in next, list do
 							Dropdown:Add(v)
 						end
@@ -3595,13 +3596,13 @@ function Library:AddWindow(options)
 
 					SubSection.List[#SubSection.List + 1] = Dropdown
 					Dropdown.Frame.Parent = SubSection.Frame.Holder.List
-					
+
 					Dropdown.Frame.Holder.List.ChildAdded:Connect(function(c)
 						if c.ClassName == "Frame" then
 							Dropdown:UpdateHeight()
 						end
 					end)
-					
+
 					Dropdown.Frame.InputBegan:Connect(function(input)
 						if input.UserInputType == Enum.UserInputType.MouseButton1 and #Dropdown.List > 0 and Mouse.Y - Dropdown.Frame.AbsolutePosition.Y <= 30 then
 							Dropdown:Toggle(not Dropdown.Toggled)
@@ -4101,7 +4102,7 @@ function Library:AddWindow(options)
 								saveConfig(filePath)
 							end
 						end)
-						
+
 						return
 					end
 
@@ -4141,6 +4142,7 @@ function Library:AddWindow(options)
 
 					Library:Notify({ text = "Are you sure you wish to delete '".. fileName.. "'?" }, function(bool)
 						if bool then
+							print(filePath)
 							delfile(filePath)
 						end
 					end)
@@ -4154,7 +4156,7 @@ function Library:AddWindow(options)
 			task.spawn(function()
 				while true do
 					RefreshList.Callback()
-					
+
 					task.wait(0.25)
 				end
 			end)
