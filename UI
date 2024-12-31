@@ -4123,7 +4123,7 @@ function Library:AddWindow(options)
 
 				for _, v in next, listfiles(Library.Settings.ConfigPath) do
 					if string.find(v, ".json") then
-						local fileName = SelfModules.Directory.GetNameFromDirectory(v)
+						local fileName = v:match("([^/\\]+)$")
 
 						configs[#configs + 1] = fileName
 						LoadName:Add(fileName)
