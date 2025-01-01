@@ -551,7 +551,6 @@ function Library:AddWindow(options)
 				end
 			end
 		end)
-		if err then print(err) end 
 	end
 
 	function Window:Toggle(bool)
