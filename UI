@@ -4099,6 +4099,7 @@ function Library:AddWindow(options)
 					if isfile(filePath) then
 						Library:Notify({ text = "You already have a config named '".. fileName.. "', do you wish to overwrite it?" }, function(bool)
 							if bool then
+							        delfile(filePath)
 								saveConfig(filePath)
 							end
 						end)
@@ -4142,7 +4143,6 @@ function Library:AddWindow(options)
 
 					Library:Notify({ text = "Are you sure you wish to delete '".. fileName.. "'?" }, function(bool)
 						if bool then
-							print(filePath)
 							delfile(filePath)
 						end
 					end)
