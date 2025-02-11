@@ -302,10 +302,11 @@ function Library:AddWindow(options)
 	if options.theme ~= nil then
 		for i, v in next, options.theme do
 			for i2, _ in next, Library.Theme do
-print(string.lower(i), string.lower(i2))
+print(i, i2)
 				if string.lower(i) == string.lower(i2) and typeof(v) == "Color3" then
-print("THEME CHANGE")
+print("THEME CHANGE", i2, v, Library.Theme[i2])
 					Library.Theme[i2] = v
+print(Library.Theme[i2])
 				end
 			end
 		end
