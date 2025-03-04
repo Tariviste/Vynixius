@@ -302,11 +302,8 @@ function Library:AddWindow(options)
 	if options.theme ~= nil then
 		for i, v in next, options.theme do
 			for i2, _ in next, Library.Theme do
-print(i, i2)
 				if string.lower(i) == string.lower(i2) and typeof(v) == "Color3" then
-print("THEME CHANGE", i2, v, Library.Theme[i2])
 					Library.Theme[i2] = v
-print(Library.Theme[i2])
 				end
 			end
 		end
@@ -554,6 +551,7 @@ print(Library.Theme[i2])
 				end
 			end
 		end)
+		if err then print(err) end 
 	end
 
 	function Window:Toggle(bool)
@@ -1482,7 +1480,7 @@ print(Library.Theme[i2])
 						tween(Bind.Frame.Holder.Indicator.Overlay, "Cosmetic", instant and 0 or 0.25, { BackgroundColor3 = bool and SelfModules.UI.Color.Add(Library.Theme.Accent, Color3.fromRGB(50, 50, 50)) or SelfModules.UI.Color.Add(Library.Theme.SectionColor, Color3.fromRGB(25, 25, 25)) })
 
 						if options.fireontoggle ~= false then
-							pcall(task.spawn, Bind.Callback, Bind.Bind, Tab.Flags[Bind.Flag])
+							pcall(task.spawn, Bind.Callback, Bind.Bind)
 						end
 					end
 				end
@@ -1508,7 +1506,7 @@ print(Library.Theme[i2])
 							return
 						end
 
-						pcall(task.spawn, Bind.Callback, Bind.Bind, Tab.Flags[Bind.Flag])
+						pcall(task.spawn, Bind.Callback, Bind.Bind)
 					end
 				end)
 
@@ -1862,6 +1860,8 @@ print(Library.Theme[i2])
 						}),
 					}, UDim.new(0,5)),
 				}, UDim.new(0, 5))
+				
+				local DropFrame = Dropdown.Frame:WaitForChild("Holder").List
 
 				-- Functions
 
@@ -1906,7 +1906,7 @@ print(Library.Theme[i2])
 
 					Dropdown.List[#Dropdown.List + 1] = name
 					ListObjects[#ListObjects + 1] = Item
-					Item.Frame.Parent = Dropdown.Frame.Holder.List
+					Item.Frame.Parent = DropFrame
 
 					if Dropdown.Toggled == true then
 						Dropdown:UpdateHeight()
@@ -4101,7 +4101,6 @@ print(Library.Theme[i2])
 					if isfile(filePath) then
 						Library:Notify({ text = "You already have a config named '".. fileName.. "', do you wish to overwrite it?" }, function(bool)
 							if bool then
-							        delfile(filePath)
 								saveConfig(filePath)
 							end
 						end)
@@ -4145,6 +4144,7 @@ print(Library.Theme[i2])
 
 					Library:Notify({ text = "Are you sure you wish to delete '".. fileName.. "'?" }, function(bool)
 						if bool then
+							print(filePath)
 							delfile(filePath)
 						end
 					end)
