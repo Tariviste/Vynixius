@@ -1635,6 +1635,10 @@ function Library:AddWindow(options)
 				-- Functions
 
 				local function getSliderValue(val)
+					if not val or not min or not max then
+						return
+					end
+					
 					val = math.clamp(val, min, max)
 
 					if options.rounded == true then
