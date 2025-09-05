@@ -1650,6 +1650,7 @@ function Library:AddWindow(options)
 
 				local function sliderVisual(val)
 					val = getSliderValue(val)
+					assert(val, "Couldn't find Slider value.")
 
 					Slider.Frame.Holder.Input.Text = val
 
@@ -1661,6 +1662,7 @@ function Library:AddWindow(options)
 
 				function Slider:Set(val)
 					val = getSliderValue(val)
+					assert(val, "Couldn't find Slider value.")
 					Slider.Value = val
 					sliderVisual(val)
 
