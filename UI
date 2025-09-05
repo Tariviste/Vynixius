@@ -499,13 +499,13 @@ function Library:AddWindow(options)
 	end
 
 	local function loadConfig(filePath)
-		local suc, err = pcall(function()
 			local config = HS:JSONDecode(readfile(filePath))
 
-			if config then
-				for _, tab in next, Window.Tabs do
-					for _, section in next, tab.Sections do
-						for _, item in next, section.List do
+		if config then
+			for _, tab in next, Window.Tabs do
+				for _, section in next, tab.Sections do
+					for _, item in next, section.List do
+						local suc, err = pcall(function()
 							local flag = item.Flag or item.Name
 
 							if config.Flags[flag] ~= nil then
@@ -526,32 +526,36 @@ function Library:AddWindow(options)
 
 							elseif item.Type == "SubSection" then
 								for _, item2 in next, item.List do
-									local flag2 = item2.Flag or item2.Name
+									local suc, err = pcall(function()
+										local flag2 = item2.Flag or item2.Name
 
-									if config.Flags[flag2] ~= nil then
-										item2[item2.Type == "Toggle" and "Set" or "Toggle"](item2, config.Flags[flag2])
-									end
+										if config.Flags[flag2] ~= nil then
+											item2[item2.Type == "Toggle" and "Set" or "Toggle"](item2, config.Flags[flag2])
+										end
 
-									if item2.Type == "Bind" then
-										item2:Set(Enum.KeyCode[config.Binds[flag2]])
+										if item2.Type == "Bind" then
+											item2:Set(Enum.KeyCode[config.Binds[flag2]])
 
-									elseif item2.Type == "Slider" then
-										item2:Set(config.Sliders[flag2])
+										elseif item2.Type == "Slider" then
+											item2:Set(config.Sliders[flag2])
 
-									elseif item2.Type == "Picker" then
-										local picker = config.Pickers[flag2]
+										elseif item2.Type == "Picker" then
+											local picker = config.Pickers[flag2]
 
-										item2:Set(picker.Color.R, picker.Color.G, picker.Color.B)
-										item2:ToggleRainbow(picker.Rainbow)
-									end
+											item2:Set(picker.Color.R, picker.Color.G, picker.Color.B)
+											item2:ToggleRainbow(picker.Rainbow)
+										end
+									end)
+
+									if err then warn(err) end
 								end
 							end
-						end
+						end)
+						if err then print(err) end
 					end
 				end
 			end
-		end)
-		if err then print(err) end 
+		end
 	end
 
 	function Window:Toggle(bool)
