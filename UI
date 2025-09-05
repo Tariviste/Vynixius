@@ -547,11 +547,11 @@ function Library:AddWindow(options)
 										end
 									end)
 
-									if err then warn(err) end
+									if err then print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(item2.Type, item2.Name, item2.Flag or item2.Name.." (No Flag)", err)) end
 								end
 							end
 						end)
-						if err then print(err) end
+						if err then print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(item.Type, item.Name, item.Flag or item.Name.." (No Flag)", err)) end
 					end
 				end
 			end
