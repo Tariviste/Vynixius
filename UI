@@ -452,6 +452,14 @@ function Library:AddWindow(options)
 	})
 
 	-- Functions
+	
+	local function GetKeycodeFromName(name)
+		for _, key in pairs(Enum.KeyCode:GetEnumItems()) do
+			if key.Name == name then
+				return key
+			end
+		end
+	end
 
 	local function saveConfig(filePath)
 		pcall(function()
@@ -499,7 +507,7 @@ function Library:AddWindow(options)
 	end
 
 	local function loadConfig(filePath)
-			local config = HS:JSONDecode(readfile(filePath))
+		local config = HS:JSONDecode(readfile(filePath))
 
 		if config then
 			for _, tab in next, Window.Tabs do
@@ -512,8 +520,11 @@ function Library:AddWindow(options)
 								item[item.Type == "Toggle" and "Set" or "Toggle"](item, config.Flags[flag])
 							end
 
-							if item.Type == "Bind" then
-								item:Set(Enum.KeyCode[config.Binds[flag]])
+							if item.Type == "Bind" and config.Binds[flag] then
+								local key = GetKeycodeFromName(config.Binds[flag])
+								if key then
+									item:Set(key)
+								end
 
 							elseif item.Type == "Slider" then
 								item:Set(config.Sliders[flag])
@@ -533,8 +544,11 @@ function Library:AddWindow(options)
 											item2[item2.Type == "Toggle" and "Set" or "Toggle"](item2, config.Flags[flag2])
 										end
 
-										if item2.Type == "Bind" then
-											item2:Set(Enum.KeyCode[config.Binds[flag2]])
+										if item2.Type == "Bind" and config.Binds[flag2] then
+											local key = GetKeycodeFromName(config.Binds[flag2])
+											if key then
+												item2:Set(key)
+											end
 
 										elseif item2.Type == "Slider" then
 											item2:Set(config.Sliders[flag2])
@@ -547,16 +561,22 @@ function Library:AddWindow(options)
 										end
 									end)
 
-									if err then print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(item2.Type, item2.Name, item2.Flag or item2.Name.." (No Flag)", err)) end
+									if err then
+										print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(item2.Type,item2.Name,item2.Flag or item2.Name.." (No Flag)",err))
+									end
 								end
 							end
 						end)
-						if err then print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(item.Type, item.Name, item.Flag or item.Name.." (No Flag)", err)) end
+
+						if err then
+							print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(item.Type,item.Name,item.Flag or item.Name.." (No Flag)",err))
+						end
 					end
 				end
 			end
 		end
 	end
+
 
 	function Window:Toggle(bool)
 		self.Toggled = bool
@@ -1642,7 +1662,7 @@ function Library:AddWindow(options)
 					if not val or not min or not max then
 						return
 					end
-					
+
 					val = math.clamp(val, min, max)
 
 					if options.rounded == true then
@@ -1870,7 +1890,7 @@ function Library:AddWindow(options)
 						}),
 					}, UDim.new(0,5)),
 				}, UDim.new(0, 5))
-				
+
 				local DropFrame = Dropdown.Frame:WaitForChild("Holder").List
 
 				-- Functions
