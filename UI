@@ -2014,8 +2014,11 @@ function Library:AddWindow(options)
 					end
 				end
 
-				function Dropdown:Select(itemName)
+				function Dropdown:Select(itemName, Caller)
 					if not table.find(Dropdown.List, itemName) then
+						if not Caller and typeof(Dropdown.Default) == "string" then
+							return Dropdown:Select(Dropdown.Default, true)
+						end
 						return
 					end
 
@@ -2057,6 +2060,7 @@ function Library:AddWindow(options)
 				end
 
 				if typeof(options.default) == "string" then
+					Dropdown.Default = options.default
 					Dropdown:Select(options.default)
 				end
 
@@ -3633,8 +3637,11 @@ function Library:AddWindow(options)
 						end
 					end
 
-					function Dropdown:Select(itemName)
+					function Dropdown:Select(itemName, Caller)
 						if not table.find(Dropdown.List, itemName) then
+							if not Caller and typeof(Dropdown.Default) == "string" then
+								return Dropdown:Select(Dropdown.Default, true)
+							end
 							return
 						end
 
