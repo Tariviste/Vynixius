@@ -2552,13 +2552,23 @@ function Library:AddWindow(options)
 					Parent.Frame.Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight())
 					Tab.Frame.CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight())
 				end
+				
+				local function ResizeUp(ParentThing)
+					if not ParentThing then return end
+
+					tween(ParentThing.Frame, 0.5, { Size = UDim2.new(1, ParentThing.Type == "SubSection" and 2 or -10, 0, ParentThing:GetHeight()) } )
+
+					if ParentThing.Parent then
+						ResizeUp(ParentThing.Parent)
+					end
+				end
 
 				local function toggleSubSection(bool)
 					SubSection.Toggled = bool
 
 					tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
 					tween(SubSection.Frame.Holder.Indicator, 0.5, { Rotation = bool and 45 or 0 })
-					tween(Parent.Frame, 0.5, { Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight()) })
+					ResizeUp(Parent)
 					tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
 				end
 
