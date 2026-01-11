@@ -3625,7 +3625,7 @@ function Library:AddWindow(options)
 						tween(Dropdown.Frame, 0.5, { Size = UDim2.new(1, 2, 0, Dropdown:GetHeight()) })
 						tween(Dropdown.Frame.Holder.Holder.Indicator, 0.5, { Rotation = bool and 90 or 0 })
 						tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
-						tween(Parent.Frame, 0.5, { Size = UDim2.new(1, -10, 0, Parent:GetHeight()) })
+						tween(Parent.Frame, 0.5, { Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight()) })
 						tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
 					end
 
@@ -3963,7 +3963,7 @@ function Library:AddWindow(options)
 						tween(Picker.Frame.Holder.Top.Indicator, 0.5, { Rotation = bool and 90 or 0 })
 
 						tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
-						tween(Parent.Frame, 0.5, { Size = UDim2.new(1, -10, 0, Parent:GetHeight()) })
+						tween(Parent.Frame, 0.5, { Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight()) })
 						tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
 					end
 
@@ -4111,6 +4111,8 @@ function Library:AddWindow(options)
 
 				Parent.List[#Parent.List + 1] = SubSection
 				SubSection.Frame.Parent = Parent.Type == "SubSection" and Parent.Frame.Holder.List or Parent.Frame.List
+				
+				Tab.Frame.CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) -- // will this work
 				
 				ApplySizeThings()
 
