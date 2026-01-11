@@ -2545,6 +2545,13 @@ function Library:AddWindow(options)
 				}, UDim.new(0, 5))
 
 				-- Functions
+				
+				local function ApplySizeThings()
+					SubSection.Frame.Size = UDim2.new(1, 2, 0, SubSection:GetHeight())
+					SubSection.Frame.Holder.Indicator.Rotation = SubSection.Toggled and 45 or 0
+					Parent.Frame.Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight())
+					Tab.Frame.CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight())
+				end
 
 				local function toggleSubSection(bool)
 					SubSection.Toggled = bool
@@ -4105,7 +4112,7 @@ function Library:AddWindow(options)
 				Parent.List[#Parent.List + 1] = SubSection
 				SubSection.Frame.Parent = Parent.Type == "SubSection" and Parent.Frame.Holder.List or Parent.Frame.List
 				
-				Parent.Frame.Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight())
+				ApplySizeThings()
 
 				return SubSection
 			end
