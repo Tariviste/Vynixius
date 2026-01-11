@@ -510,7 +510,7 @@ function Library:AddWindow(options)
 		if config then
 			for _, tab in next, Window.Tabs do
 				for _, section in next, tab.Sections do
-					idk(section.List, function(item)
+					Idk(section.List, function(item)
 						local suc, err = pcall(function()
 							local flag = item.Flag or item.Name
 
