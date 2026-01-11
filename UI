@@ -2593,7 +2593,7 @@ function Library:AddWindow(options)
 
 					tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
 					tween(SubSection.Frame.Holder.Indicator, 0.5, { Rotation = bool and 45 or 0 })
-					tween(Parent.Frame, 0.5, { Size = UDim2.new(1, -10, 0, Parent:GetHeight()) })
+					tween(Parent.Frame, 0.5, { Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight()) })
 					tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
 				end
 
