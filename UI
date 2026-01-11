@@ -4161,7 +4161,7 @@ function Library:AddWindow(options)
 				end)
 
 				Parent.List[#Parent.List + 1] = SubSection
-				SubSection.Frame.Parent = Parent.Frame.List
+				SubSection.Frame.Parent = Parent.Type == "SubSection" and Parent.Frame.Holder.List or Parent.Frame.List
 
 				return SubSection
 			end
