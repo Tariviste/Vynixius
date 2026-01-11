@@ -2593,13 +2593,7 @@ function Library:AddWindow(options)
 
 					tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
 					tween(SubSection.Frame.Holder.Indicator, 0.5, { Rotation = bool and 45 or 0 })
-
-					if Parent.UpdateHeight then
-						Parent:UpdateHeight()
-					else
-						tween(Parent.Frame, 0.5, { Size = UDim2.new(1, -10, 0, Parent:GetHeight()) })
-					end
-
+					tween(Parent.Frame, 0.5, { Size = UDim2.new(1, -10, 0, Parent:GetHeight()) })
 					tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
 				end
 
@@ -2619,10 +2613,6 @@ function Library:AddWindow(options)
 					if SubSection.Toggled == true then
 						SubSection.Frame.Size = UDim2.new(1, 2, 0, SubSection:GetHeight())
 						SubSection.Frame.Holder.Indicator.Rotation = 45
-
-						if Parent.UpdateHeight then
-							Parent:UpdateHeight()
-						end
 					end
 				end
 
@@ -3670,13 +3660,7 @@ function Library:AddWindow(options)
 						tween(Dropdown.Frame, 0.5, { Size = UDim2.new(1, 2, 0, Dropdown:GetHeight()) })
 						tween(Dropdown.Frame.Holder.Holder.Indicator, 0.5, { Rotation = bool and 90 or 0 })
 						tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
-
-						if Parent.UpdateHeight then
-							Parent:UpdateHeight()
-						else
-							tween(Parent.Frame, 0.5, { Size = UDim2.new(1, -10, 0, Parent:GetHeight()) })
-						end
-
+						tween(Parent.Frame, 0.5, { Size = UDim2.new(1, -10, 0, Parent:GetHeight()) })
 						tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
 					end
 
