@@ -452,7 +452,7 @@ function Library:AddWindow(options)
 	})
 
 	-- Functions
-	
+
 	local function GetKeycodeFromName(name)
 		for _, key in pairs(Enum.KeyCode:GetEnumItems()) do
 			if key.Name == name then
@@ -460,7 +460,7 @@ function Library:AddWindow(options)
 			end
 		end
 	end
-	
+
 	local function Idk(list, callback)
 		for _, item in next, list do
 			callback(item)
@@ -2465,14 +2465,35 @@ function Library:AddWindow(options)
 			function Section:AddSubSection(name, options)
 				local Parent = self
 				options = options or {}
-
+				
 				local SubSection = {
 					Name = name,
 					Type = "SubSection",
 					Toggled = options.default or false,
 					List = {},
 				}
-				
+
+				SubSection.Parent = Parent
+								
+				local function UpdateParentSize()
+					local p = Parent
+
+					while p do
+						if p.Type == "SubSection" then
+							tween(p.Frame, 0.35, { Size = UDim2.new(1, 2, 0, p:GetHeight()) })
+							p = p.Parent
+
+						elseif p.Type == "Section" then
+							tween(p.Frame, 0.35, { Size = UDim2.new(1, -10, 0, p:GetHeight()) })
+							break
+						else
+							break
+						end
+					end
+
+					tween(Tab.Frame, 0.35, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
+				end
+
 				function SubSection:AddSubSection(name, options)
 					return Section.AddSubSection(self, name, options)
 				end
@@ -2545,51 +2566,34 @@ function Library:AddWindow(options)
 				}, UDim.new(0, 5))
 
 				-- Functions
-				
+
 				local function ApplySizeThings()
-					SubSection.Frame.Size = UDim2.new(1, 2, 0, SubSection:GetHeight())
-					SubSection.Frame.Holder.Indicator.Rotation = SubSection.Toggled and 45 or 0
-					Parent.Frame.Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight())
-					Tab.Frame.CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight())
-				end
-				
-				local function ResizeUp(Thingy)
-					if not Thingy then return end
-
-					if Thingy.Type == "SubSection" then
-						tween(Thingy.Frame, 0.5, {
-							Size = UDim2.new(1, 2, 0, Thingy:GetHeight())
-						})
-
-						tween(Thingy.Frame.Holder.Indicator, 0.5, {
-							Rotation = Thingy.Toggled and 45 or 0
-						})
-					else
-						tween(Thingy.Frame, 0.5, {
-							Size = UDim2.new(1, -10, 0, Thingy:GetHeight())
-						})
-					end
-
-					if Thingy.Parent then
-						ResizeUp(Thingy.Parent)
-					end
+					--SubSection.Frame.Size = UDim2.new(1, 2, 0, SubSection:GetHeight())
+					--SubSection.Frame.Holder.Indicator.Rotation = SubSection.Toggled and 45 or 0
+					--Parent.Frame.Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight())
+					--Tab.Frame.CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight())
 				end
 
 				local function toggleSubSection(bool)
 					SubSection.Toggled = bool
 
-					--tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
-					--tween(SubSection.Frame.Holder.Indicator, 0.5, { Rotation = bool and 45 or 0 })
-					ResizeUp(SubSection)
-					tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
-				end
+					tween(SubSection.Frame, 0.35, {
+						Size = UDim2.new(1, 2, 0, SubSection:GetHeight())
+					})
 
+					tween(SubSection.Frame.Holder.Indicator, 0.35, {
+						Rotation = bool and 45 or 0
+					})
+
+					UpdateParentSize()
+				end
+				
 				function SubSection:GetHeight()
 					local height = 42
 
 					if SubSection.Toggled == true then
 						for i, v in next, self.List do
-							height = height + (v.GetHeight ~= nil and v:GetHeight() or v.Frame.AbsoluteSize.Y) + 5
+							height = height + (v.GetHeight ~= nil and v:GetHeight() or v.Frame.Size.Y.Offset) + 5
 						end
 					end
 
@@ -3647,8 +3651,7 @@ function Library:AddWindow(options)
 						tween(Dropdown.Frame, 0.5, { Size = UDim2.new(1, 2, 0, Dropdown:GetHeight()) })
 						tween(Dropdown.Frame.Holder.Holder.Indicator, 0.5, { Rotation = bool and 90 or 0 })
 						tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
-						tween(Parent.Frame, 0.5, { Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight()) })
-						tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
+						UpdateParentSize()
 					end
 
 					-- Scripts
@@ -3983,10 +3986,8 @@ function Library:AddWindow(options)
 
 						tween(Picker.Frame, 0.5, { Size = UDim2.new(1, 2, 0, Picker:GetHeight()) })
 						tween(Picker.Frame.Holder.Top.Indicator, 0.5, { Rotation = bool and 90 or 0 })
-
 						tween(SubSection.Frame, 0.5, { Size = UDim2.new(1, 2, 0, SubSection:GetHeight()) })
-						tween(Parent.Frame, 0.5, { Size = UDim2.new(1, Parent.Type == "SubSection" and 2 or -10, 0, Parent:GetHeight()) })
-						tween(Tab.Frame, 0.5, { CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) })
+						UpdateParentSize()
 					end
 
 					function Picker:ToggleRainbow(bool)
@@ -4134,8 +4135,12 @@ function Library:AddWindow(options)
 				Parent.List[#Parent.List + 1] = SubSection
 				SubSection.Frame.Parent = Parent.Type == "SubSection" and Parent.Frame.Holder.List or Parent.Frame.List
 				
+				task.defer(function()
+					SubSection:UpdateHeight()
+				end)
+
 				Tab.Frame.CanvasSize = UDim2.new(0, 0, 0, Tab:GetHeight()) -- // will this work
-				
+
 				ApplySizeThings()
 
 				return SubSection
