@@ -3444,6 +3444,7 @@ function Library:AddWindow(options)
 						Selected = "",
 						List = {},
 						Callback = callback,
+						Flag = options.flag or name,
 					}
 
 					local ListObjects = {}
