@@ -460,6 +460,17 @@ function Library:AddWindow(options)
 			end
 		end
 	end
+	
+	local function Idk(list, callback)
+		for _, item in next, list do
+			callback(item)
+
+			if item.Type == "SubSection" and item.List then
+				Idk(item.List, callback)
+			end
+		end
+	end
+
 
 	local function saveConfig(filePath)
 		pcall(function()
@@ -471,7 +482,7 @@ function Library:AddWindow(options)
 				end
 
 				for _, section in next, tab.Sections do
-					for _, item in next, section.List do
+					Idk(section.List, function(item)
 						local flag = item.Flag or item.Name
 
 						if item.Type == "Bind" then
@@ -479,32 +490,14 @@ function Library:AddWindow(options)
 
 						elseif item.Type == "Slider" then
 							config.Sliders[flag] = item.Value
-							
+
 						elseif item.Type == "Dropdown" then
 							config.Dropdowns[flag] = item.Selected
 
 						elseif item.Type == "Picker" then
 							config.Pickers[flag] = { Color = item.Color, Rainbow = item.Rainbow }
-
-						elseif item.Type == "SubSection" then
-							for _, item2 in next, item.List do
-								local flag2 = item2.Flag or item2.Name
-
-								if item2.Type == "Bind" then
-									config.Binds[flag2] = item2.Bind.Name
-
-								elseif item2.Type == "Slider" then
-									config.Sliders[flag2] = item2.Value
-									
-								elseif item2.Type == "Dropdown" then
-									config.Dropdowns[flag2] = item2.Selected
-
-								elseif item2.Type == "Picker" then
-									config.Pickers[flag2] = { Color = item2.Color, Rainbow = item2.Rainbow }
-								end
-							end
 						end
-					end
+					end)
 				end
 			end
 
@@ -518,7 +511,7 @@ function Library:AddWindow(options)
 		if config then
 			for _, tab in next, Window.Tabs do
 				for _, section in next, tab.Sections do
-					for _, item in next, section.List do
+					idk(section.List, function(item)
 						local suc, err = pcall(function()
 							local flag = item.Flag or item.Name
 
@@ -534,7 +527,7 @@ function Library:AddWindow(options)
 
 							elseif item.Type == "Slider" then
 								item:Set(config.Sliders[flag])
-								
+
 							elseif item.Type == "Dropdown" then
 								local saved = config.Dropdowns[flag]
 
@@ -546,56 +539,22 @@ function Library:AddWindow(options)
 
 							elseif item.Type == "Picker" then
 								local picker = config.Pickers[flag]
-
-								item:Set(picker.Color.R, picker.Color.G, picker.Color.B)
-								item:ToggleRainbow(picker.Rainbow)
-
-							elseif item.Type == "SubSection" then
-								for _, item2 in next, item.List do
-									local suc, err = pcall(function()
-										local flag2 = item2.Flag or item2.Name
-
-										if config.Flags[flag2] ~= nil then
-											item2[item2.Type == "Toggle" and "Set" or "Toggle"](item2, config.Flags[flag2])
-										end
-
-										if item2.Type == "Bind" and config.Binds[flag2] then
-											local key = GetKeycodeFromName(config.Binds[flag2])
-											if key then
-												item2:Set(key)
-											end
-											
-										elseif item2.Type == "Slider" then
-											item2:Set(config.Sliders[flag2])
-											
-										elseif item2.Type == "Dropdown" then
-											local saved = config.Dropdowns[flag2]
-
-											if saved and table.find(item2.List, saved) then
-												item2:Select(saved)
-											elseif item2.Default then
-												item2:Select(item2.Default)
-											end
-
-										elseif item2.Type == "Picker" then
-											local picker = config.Pickers[flag2]
-
-											item2:Set(picker.Color.R, picker.Color.G, picker.Color.B)
-											item2:ToggleRainbow(picker.Rainbow)
-										end
-									end)
-
-									if err then
-										print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(item2.Type,item2.Name,item2.Flag or item2.Name.." (No Flag)",err))
-									end
+								if picker then
+									item:Set(picker.Color.R, picker.Color.G, picker.Color.B)
+									item:ToggleRainbow(picker.Rainbow)
 								end
 							end
 						end)
 
 						if err then
-							print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(item.Type,item.Name,item.Flag or item.Name.." (No Flag)",err))
+							print(("Error occured, Type: %s, Name: %s Flag: %s, Error: %s"):format(
+								item.Type,
+								item.Name,
+								item.Flag or item.Name.." (No Flag)",
+								err
+								))
 						end
-					end
+					end)
 				end
 			end
 		end
